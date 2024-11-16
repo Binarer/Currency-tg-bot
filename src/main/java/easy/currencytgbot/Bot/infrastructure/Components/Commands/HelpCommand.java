@@ -14,13 +14,6 @@ public class HelpCommand implements Command {
     @Override
     public void execute(Update update, Bot bot) {
         long chatId = update.getMessage().getChatId();
-        String textToSend = "Here are the available commands:\n" +
-                "/start - Start the bot\n" +
-                "/help - Get help\n" +
-                "/rate - Get currency rates\n" +
-                "/convert - Convert currencies\n" +
-                "/crypto - Get crypto rates";
-
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(BotCommands.HELP_TEXT);

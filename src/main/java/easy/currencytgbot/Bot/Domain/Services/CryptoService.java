@@ -5,6 +5,7 @@ import easy.currencytgbot.Bot.Application.Interfaces.ICryptoService;
 import easy.currencytgbot.Bot.Domain.Models.CryptoRateResponse;
 import easy.currencytgbot.Bot.Domain.Models.CryptoSymbol;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,7 +20,10 @@ public class CryptoService implements ICryptoService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-
+    @Value("${crypto.api.url}")
+    private String api;
+    @Value("${crypto.api.key}")
+    private String key;
     public CryptoService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
@@ -28,14 +32,12 @@ public class CryptoService implements ICryptoService {
 
     @Override
     public List<CryptoSymbol> getCryptoRates() {
-        String apiUrl = "https://api.freecryptoapi.com/v1/getData?symbol=BTC+ETH+ETHBTC@binance";
-
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer ems58cndr82sb0wxvgoe");
+        headers.set("Authorization", "Bearer " + key);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(api, HttpMethod.GET, entity, String.class);
         String response = responseEntity.getBody();
 
         try {

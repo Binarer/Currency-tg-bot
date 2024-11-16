@@ -3,6 +3,7 @@ package easy.currencytgbot.Bot.Domain.Services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import easy.currencytgbot.Bot.Application.Interfaces.ICurrencyService;
 import easy.currencytgbot.Bot.Domain.Models.CurrencyRateResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,6 +14,8 @@ public class CurrencyService implements ICurrencyService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    @Value("${currency.api.url}")
+    private String api;
     public CurrencyService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
@@ -20,7 +23,7 @@ public class CurrencyService implements ICurrencyService {
 
     @Override
     public String getCurrentCurrencyRate(String currency) {
-        String apiUrl = "https://v6.exchangerate-api.com/v6/73d3ee6f3557bbc103075d44/latest/" + currency;
+        String apiUrl = api + currency;
         String response = restTemplate.getForObject(apiUrl, String.class);
 
         try {
