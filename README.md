@@ -69,6 +69,7 @@
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
+
 Приветствуються вклады! Пожалуйста, выполните следующие действия, чтобы внести свой вклад:
 
 1. Fork the repository.
