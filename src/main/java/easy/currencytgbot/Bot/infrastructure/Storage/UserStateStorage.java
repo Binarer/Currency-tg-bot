@@ -1,13 +1,11 @@
 package easy.currencytgbot.Bot.infrastructure.Storage;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class UserStateStorage {
@@ -48,5 +46,11 @@ public class UserStateStorage {
 
     public void removeUserToCurrency(long chatId) {
         userToCurrency.remove(chatId);
+    }
+    public Set<Long> getAllUserChatIds() {
+        Set<Long> chatIds = new HashSet<>(userStates.keySet());
+        chatIds.addAll(userFromCurrency.keySet());
+        chatIds.addAll(userToCurrency.keySet());
+        return chatIds;
     }
 }

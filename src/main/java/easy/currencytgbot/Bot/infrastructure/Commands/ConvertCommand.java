@@ -1,4 +1,5 @@
-package easy.currencytgbot.Bot.infrastructure.Components.Commands;
+package easy.currencytgbot.Bot.infrastructure.Commands;
+
 
 import easy.currencytgbot.Bot.Application.Bot.Bot;
 import easy.currencytgbot.Bot.infrastructure.Components.Command;
@@ -15,34 +16,36 @@ import java.util.ArrayList;
 import java.util.List;
 @Slf4j
 @Component
-public class StartCommand implements Command {
+public class ConvertCommand implements Command {
     @Override
     public void execute(Update update, Bot bot) {
         long chatId = update.getMessage().getChatId();
-        String userName = update.getMessage().getFrom().getFirstName();
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Hello, " + userName + "! I'm a Telegram bot.");
+        message.setText("Выберите валюту для конвертации:");
 
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(true);
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        markup.setResizeKeyboard(true);
+        markup.setOneTimeKeyboard(true);
 
         List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-        row.add(new KeyboardButton("/rate"));
-        row.add(new KeyboardButton("/convert"));
-        row.add(new KeyboardButton("/crypto"));
-        row.add(new KeyboardButton("/help"));
-        keyboard.add(row);
+        KeyboardRow row1 = new KeyboardRow();
+        row1.add(new KeyboardButton("USD"));
+        row1.add(new KeyboardButton("EUR"));
+        row1.add(new KeyboardButton("RUB"));
+        row1.add(new KeyboardButton("CNY"));
 
-        keyboardMarkup.setKeyboard(keyboard);
-        message.setReplyMarkup(keyboardMarkup);
+        keyboard.add(row1);
+
+        markup.setKeyboard(keyboard);
+        message.setReplyMarkup(markup);
+
+        bot.getUserStateStorage().setUserState(chatId, "FROM_CURRENCY");
 
         try {
             bot.execute(message);
-            log.info("Reply sent");
+            log.info("Conversion selection sent");
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }

@@ -10,7 +10,7 @@ public interface BotCommands {
             new BotCommand("/help", "bot info"),
             new BotCommand("/rate", "rate currency"),
             new BotCommand("/convert", "convert currency"),
-             new BotCommand("/crypto", "rate crypto")
+            new BotCommand("/crypto", "rate crypto")
     );
 
     String HELP_TEXT = "Этот бот создан для просмотра текущего круса валют." +

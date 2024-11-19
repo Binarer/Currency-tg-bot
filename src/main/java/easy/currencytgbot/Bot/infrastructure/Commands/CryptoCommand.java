@@ -1,4 +1,4 @@
-package easy.currencytgbot.Bot.infrastructure.Components.Commands;
+package easy.currencytgbot.Bot.infrastructure.Commands;
 
 import easy.currencytgbot.Bot.Application.Bot.Bot;
 import easy.currencytgbot.Bot.Domain.Models.CryptoSymbol;
