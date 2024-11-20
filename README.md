@@ -1,4 +1,4 @@
-# Telegram Currency and Crypto rate Bot 🤑
+# Telegram Currency Bot 🤑
 ## Содержание
 
 - [Описание](#описание)
