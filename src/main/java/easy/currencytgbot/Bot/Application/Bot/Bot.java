@@ -31,6 +31,15 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
 
+/**
+ * Основной класс бота для Telegram.
+ * Этот класс реализует интерфейсы {@link ICurrencyRateListener} и {@link BotCommands},
+ * а также предоставляет методы для обработки обновлений и отправки сообщений.
+ *
+ * @author Минаков Эдуард
+ * @version 1.0
+ * @since 2024-11-21
+ */
 @Slf4j
 @Component
 public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener, BotCommands {
@@ -47,6 +56,17 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
     private final CurrencyRateObserver currencyRateObserver;
     private final Map<String, UserState> states = new HashMap<>();
 
+    /**
+     * Конструктор бота.
+     *
+     * @param config                    конфигурация бота
+     * @param currencyService           сервис для работы с валютами
+     * @param currencyConversionService сервис для конвертации валют
+     * @param userStateStorage          хранилище состояний пользователей
+     * @param cryptoService             сервис для работы с криптовалютами
+     * @param commandFactory            фабрика команд
+     * @param currencyRateObserver      наблюдатель за курсами валют
+     */
     public Bot(BotConfig config, ICurrencyService currencyService, ICurrencyConversionService currencyConversionService, UserStateStorage userStateStorage, ICryptoService cryptoService, CommandFactory commandFactory, CurrencyRateObserver currencyRateObserver) {
         this.config = config;
         this.currencyService = currencyService;
@@ -60,12 +80,18 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         setCommands();
     }
 
+    /**
+     * Регистрирует состояния пользователей.
+     */
     private void registerStates() {
         states.put("FROM_CURRENCY", new FromCurrencyState());
         states.put("TO_CURRENCY", new ToCurrencyState());
         states.put("AMOUNT", new AmountState());
     }
 
+    /**
+     * Устанавливает команды бота.
+     */
     private void setCommands() {
         try {
             this.execute(new SetMyCommands(LIST_OF_COMMANDS, new BotCommandScopeDefault(), null));
@@ -84,6 +110,11 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         return config.getToken();
     }
 
+    /**
+     * Обрабатывает полученные обновления.
+     *
+     * @param update обновление
+     */
     @Override
     public void onUpdateReceived(Update update) {
         long chatId = extractChatId(update);
@@ -94,6 +125,12 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         botAnswerUtils(update, receivedMessage, chatId, userName);
     }
 
+    /**
+     * Извлекает идентификатор чата из обновления.
+     *
+     * @param update обновление
+     * @return идентификатор чата
+     */
     private long extractChatId(Update update) {
         if (update.hasMessage()) {
             return update.getMessage().getChatId();
@@ -103,6 +140,12 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         return 0;
     }
 
+    /**
+     * Извлекает идентификатор пользователя из обновления.
+     *
+     * @param update обновление
+     * @return идентификатор пользователя
+     */
     private long extractUserId(Update update) {
         if (update.hasMessage()) {
             return update.getMessage().getFrom().getId();
@@ -112,6 +155,12 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         return 0;
     }
 
+    /**
+     * Извлекает имя пользователя из обновления.
+     *
+     * @param update обновление
+     * @return имя пользователя
+     */
     private String extractUserName(Update update) {
         if (update.hasMessage()) {
             return update.getMessage().getFrom().getFirstName();
@@ -121,6 +170,12 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         return null;
     }
 
+    /**
+     * Извлекает текст сообщения из обновления.
+     *
+     * @param update обновление
+     * @return текст сообщения
+     */
     private String extractReceivedMessage(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             return update.getMessage().getText();
@@ -130,6 +185,14 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         return null;
     }
 
+    /**
+     * Обрабатывает ответ бота на основе полученного сообщения.
+     *
+     * @param update          обновление
+     * @param receivedMessage полученное сообщение
+     * @param chatId          идентификатор чата
+     * @param userName        имя пользователя
+     */
     private void botAnswerUtils(Update update, String receivedMessage, long chatId, String userName) {
         try {
             Command command = new LoggingCommandDecorator(commandFactory.createCommand(receivedMessage));
@@ -139,6 +202,13 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         }
     }
 
+    /**
+     * Обрабатывает сообщение на основе текущего состояния пользователя.
+     *
+     * @param receivedMessage полученное сообщение
+     * @param chatId          идентификатор чата
+     * @param userName        имя пользователя
+     */
     private void handleMessage(String receivedMessage, long chatId, String userName) {
         String state = userStateStorage.getUserState(chatId);
         if (state != null) {
@@ -151,15 +221,32 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         }
     }
 
+    /**
+     * Обрабатывает выбор валюты и отправляет текущий курс.
+     *
+     * @param currency валюта
+     * @param chatId   идентификатор чата
+     */
     private void handleCurrencySelection(String currency, long chatId) {
         String rate = currencyService.getCurrentCurrencyRate(currency);
         sendMessage(chatId, rate);
     }
-
+    /**
+     * Отправляет сообщение пользователю.
+     *
+     * @param chatId идентификатор чата
+     * @param text текст сообщения
+     */
     public void sendMessage(long chatId, String text) {
         sendMessage(chatId, text, null);
     }
-
+    /**
+     * Отправляет сообщение пользователю с указанной клавиатурой.
+     *
+     * @param chatId идентификатор чата
+     * @param text текст сообщения
+     * @param markup клавиатура
+     */
     public void sendMessage(long chatId, String text, ReplyKeyboardMarkup markup) {
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
@@ -168,7 +255,11 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
                 .build();
         executeMessage(message);
     }
-
+    /**
+     * Выполняет отправку сообщения.
+     *
+     * @param message сообщение
+     */
     private void executeMessage(SendMessage message) {
         try {
             execute(message);
@@ -176,23 +267,6 @@ public class Bot extends TelegramLongPollingBot implements ICurrencyRateListener
         } catch (TelegramApiException e) {
             log.error("Error sending message", e);
         }
-    }
-
-    public ReplyKeyboardMarkup createCurrencyKeyboard() {
-        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-        markup.setResizeKeyboard(true);
-        markup.setOneTimeKeyboard(true);
-
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row1 = new KeyboardRow();
-        row1.add(new KeyboardButton("USD"));
-        row1.add(new KeyboardButton("EUR"));
-        row1.add(new KeyboardButton("RUB"));
-        row1.add(new KeyboardButton("CNY"));
-
-        keyboard.add(row1);
-        markup.setKeyboard(keyboard);
-        return markup;
     }
 
     @Override

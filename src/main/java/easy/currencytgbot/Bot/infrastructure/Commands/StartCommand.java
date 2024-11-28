@@ -13,21 +13,33 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Команда для приветствия пользователя.
+ * Этот класс реализует интерфейс {@link Command} и предоставляет метод для выполнения команды приветствия.
+ *
+ * @author Минаков Эдуард
+ * @version 1.0
+ * @since 2024-11-21
+ */
 @Slf4j
 @Component
 public class StartCommand implements Command {
+    /**
+     * Выполняет команду приветствия пользователя.
+     *
+     * @param update обновление, содержащее информацию о сообщении или событии
+     * @param bot    экземпляр бота, который будет использоваться для выполнения команды
+     */
     @Override
     public void execute(Update update, Bot bot) {
         long chatId = update.getMessage().getChatId();
         String userName = update.getMessage().getFrom().getFirstName();
 
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Hello, " + userName + "! I'm a Telegram bot.");
-
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(true);
+        SendMessage message = SendMessage.builder().chatId(chatId)
+                .text(String.format("Привет, %s! Я бот для конвертации валют и криптовалют. Как я могу помочь?", userName))
+                .build();
+        ReplyKeyboardMarkup keyboardMarkup = ReplyKeyboardMarkup.builder().resizeKeyboard(true).oneTimeKeyboard(true).build();
 
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -42,9 +54,9 @@ public class StartCommand implements Command {
 
         try {
             bot.execute(message);
-            log.info("Reply sent");
+            log.info("Welcome message sent");
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error("Error sending welcome message: {}", e.getMessage(), e);
         }
     }
 }

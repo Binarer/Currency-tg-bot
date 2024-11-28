@@ -27,13 +27,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-    // https://mvnrepository.com/artifact/org.telegram/telegrambots
+    //telegrambots
     implementation 'org.telegram:telegrambots:6.9.7.1'
-    // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+    //jakarta.xml.bind-api
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-jakarta-xmlbind-annotations
+    //jackson-module-jakarta-xmlbind-annotations
     implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.18.1'
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-jaxb-annotations
+    //jackson-module-jaxb-annotations
     implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.18.1'
 
     runtimeOnly 'com.mysql:mysql-connector-j'

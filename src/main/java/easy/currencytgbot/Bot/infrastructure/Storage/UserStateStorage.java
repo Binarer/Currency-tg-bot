@@ -6,7 +6,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+/**
+ * Хранилище состояний пользователя.
+ * Этот класс используется для хранения состояний пользователей, а также их валютных предпочтений.
+ *
+ * @author Эдуард Минаков
+ * @version 1.0
+ * @since 2024-11-21
+ */
 @Component
 public class UserStateStorage {
     private final Map<Long, String> userStates = new HashMap<>();

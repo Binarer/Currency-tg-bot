@@ -3,21 +3,38 @@ package easy.currencytgbot.Bot.infrastructure.Components;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 
 import java.util.List;
-
+/**
+ * Интерфейс для команд бота.
+ * Этот интерфейс определяет список команд и текст справки для бота.
+ *
+ * @author Минаков Эдуард
+ * @version 1.0
+ * @since 2024-11-21
+ */
 public interface BotCommands {
+    /**
+     * Список команд бота.
+     */
     List<BotCommand> LIST_OF_COMMANDS = List.of(
-            new BotCommand("/start", "start bot"),
-            new BotCommand("/help", "bot info"),
-            new BotCommand("/rate", "rate currency"),
-            new BotCommand("/convert", "convert currency"),
-            new BotCommand("/crypto", "rate crypto")
+            new BotCommand("/start", "Запустить бота"),
+            new BotCommand("/help", "Информация о боте"),
+            new BotCommand("/rate", "Текущий курс валют"),
+            new BotCommand("/convert", "Конвертация валют"),
+            new BotCommand("/crypto", "Курс криптовалют")
     );
 
-    String HELP_TEXT = "Этот бот создан для просмотра текущего круса валют." +
-            "В настоящий момент работают эти команды:\n\n" +
-            "/start - запуск!\n"+
-            "/help - вспомогательное меню.\n"+
-            "/rate - текущий курс валют.\n"+
-            "/convert - рассчитать конвертацию валют из одной в другую.\n"+
-            "/crypto - получить курс криптовалюты";
+
+    /**
+     * Текст справки для бота.
+     */
+    String HELP_TEXT = """
+            Этот бот создан для просмотра текущего курса валют и криптовалют, а также для конвертации валют.
+            В настоящий момент доступны следующие команды:
+
+            /start - Запустить бота
+            /help - Показать это меню справки
+            /rate - Показать текущий курс валют
+            /convert - Рассчитать конвертацию валют из одной в другую
+            /crypto - Показать курс криптовалют
+            """;
 }

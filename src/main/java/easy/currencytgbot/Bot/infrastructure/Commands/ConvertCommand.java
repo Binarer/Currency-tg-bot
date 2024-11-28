@@ -2,6 +2,7 @@ package easy.currencytgbot.Bot.infrastructure.Commands;
 
 
 import easy.currencytgbot.Bot.Application.Bot.Bot;
+import easy.currencytgbot.Bot.infrastructure.Components.Buttons;
 import easy.currencytgbot.Bot.infrastructure.Components.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,32 +15,30 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Команда для выбора валюты для конвертации.
+ * Этот класс реализует интерфейс {@link Command} и предоставляет метод для выполнения команды выбора валюты.
+ *
+ * @author Минаков Эдуард
+ * @version 1.0
+ * @since 2024-11-21
+ */
 @Slf4j
 @Component
 public class ConvertCommand implements Command {
+    /**
+     * Выполняет команду выбора валюты для конвертации.
+     *
+     * @param update обновление, содержащее информацию о сообщении или событии
+     * @param bot    экземпляр бота, который будет использоваться для выполнения команды
+     */
     @Override
     public void execute(Update update, Bot bot) {
         long chatId = update.getMessage().getChatId();
 
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Выберите валюту для конвертации:");
-
-        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-        markup.setResizeKeyboard(true);
-        markup.setOneTimeKeyboard(true);
-
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row1 = new KeyboardRow();
-        row1.add(new KeyboardButton("USD"));
-        row1.add(new KeyboardButton("EUR"));
-        row1.add(new KeyboardButton("RUB"));
-        row1.add(new KeyboardButton("CNY"));
-
-        keyboard.add(row1);
-
-        markup.setKeyboard(keyboard);
-        message.setReplyMarkup(markup);
+        SendMessage message = SendMessage.builder().chatId(chatId).text("Выберите валюту для конвертации:").build();
+        message.setReplyMarkup(Buttons.createCurrencyKeyboard());
 
         bot.getUserStateStorage().setUserState(chatId, "FROM_CURRENCY");
 
@@ -47,7 +46,7 @@ public class ConvertCommand implements Command {
             bot.execute(message);
             log.info("Conversion selection sent");
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error("Ошибка при отправке выбора конвертации валюты: {}", e.getMessage(), e);
         }
     }
 }
