@@ -25,7 +25,7 @@
 
 - **Backend**: Spring Boot
 - **Build Tool**: Gradle
-
+  
 ## Установка
 
 1. Склонировать репозиторий:
@@ -65,7 +65,7 @@
     - `/rate`: Получите текущие курсы валют для USD, EUR, RUB и CNY.
     - `/convert`: конвертируйте валюты между долларами США, евро, рублями и юанями.
     - `/crypto`: Получайте последние цены на биткоин (BTC) и Эфириум (ETH).
-
+  
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
